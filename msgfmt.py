@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Written by Martin v. Lwis <loewis@informatik.hu-berlin.de>
 # Plural forms support added by alexander smishlajev <alex@tycobka.lv>
@@ -87,15 +88,15 @@ def generate ():
         voffsets += [l2, o2+valuestart]
     offsets = koffsets + voffsets
     output = struct.pack("Iiiiiii",
-                         0x950412de,       # Magic
+                         0x950412de,        # Magic
                          0,                 # Version
                          len(keys),         # # of entries
                          7*4,               # start of key index
                          7*4+len(keys)*8,   # start of value index
                          0, 0)              # size and offset of hash table
-    output += array.array("i", offsets).tostring()
-    output += ids
-    output += strs
+    output += array.array("i", offsets).tobytes()
+    output += ids.encode()
+    output += strs.encode()
     return output
 
 
