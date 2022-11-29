@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class PSDImage:
@@ -137,7 +137,7 @@ class adobe_pat(SBCodec):
 		def decode_str(str):
 			if str[0:4] == '$$$/':
 				str = str.partition('=')[2]
-			return str.replace('^C',u'©').replace('^R',u'®')
+			return str.replace('^C','©').replace('^R','®')
 		file = open(file,'rb')
 		file.seek(4, 1)
 		version,pat_count = struct.unpack('>H L',file.read(6))
@@ -149,7 +149,7 @@ class adobe_pat(SBCodec):
 			item = Pattern(swatchbook)
 			version1,model,height,width,name_length = struct.unpack('>2L 2H L',file.read(16))
 			if name_length > 0:
-				item.info.title = decode_str(unicode(struct.unpack(str(name_length*2)+'s',file.read(name_length*2))[0],'utf_16_be')).split('\x00')[0]
+				item.info.title = decode_str(str(struct.unpack(str(name_length*2)+'s',file.read(name_length*2))[0],'utf_16_be')).split('\x00')[0]
 			length = struct.unpack('B',file.read(1))[0]
 			id = file.read(length)
 			pal_size = unk2 = 0

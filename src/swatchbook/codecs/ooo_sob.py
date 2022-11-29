@@ -53,7 +53,7 @@ class ooo_sob(SBCodec):
 			if elem.tag == draw+'fill-image':
 				item = Pattern(swatchbook)
 				if draw+'name' in elem.attrib:
-					item.info.title = xmlunescape(unicode(elem.attrib[draw+'name']))
+					item.info.title = xmlunescape(str(elem.attrib[draw+'name']))
 				if '{http://www.w3.org/1999/xlink}href' in elem.attrib:
 					id = item.info.identifier = elem.attrib['{http://www.w3.org/1999/xlink}href'].replace("Pictures/","")
 				if id in swatchbook.materials:

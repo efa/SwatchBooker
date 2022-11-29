@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class corel_cpl(SBCodec):
@@ -43,7 +43,7 @@ class corel_cpl(SBCodec):
 		if version == '\xdc\xdc': #custom palettes
 			length = struct.unpack('B',file.read(1))[0]
 			if length > 0:
-				swatchbook.info.title = unicode(struct.unpack(str(length)+'s',file.read(length))[0],'latin1')
+				swatchbook.info.title = str(struct.unpack(str(length)+'s',file.read(length))[0],'latin1')
 			nbcolors = struct.unpack('<H',file.read(2))[0]
 		elif version in ('\xcc\xbc','\xcc\xdc'):
 			nbcolors = struct.unpack('<H',file.read(2))[0]
@@ -58,9 +58,9 @@ class corel_cpl(SBCodec):
 			length = struct.unpack('B',file.read(1))[0]
 			if length > 0:
 				if version == '\xcd\xdc':
-					swatchbook.info.title = unicode(struct.unpack(str(length)+'s',file.read(length))[0],'latin1')
+					swatchbook.info.title = str(struct.unpack(str(length)+'s',file.read(length))[0],'latin1')
 				else:
-					swatchbook.info.title = unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_le')
+					swatchbook.info.title = str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_le')
 			# Header 1: Palette Type
 			file.seek(headers[1], 0)
 			type = struct.unpack('<H',file.read(2))[0]
@@ -99,7 +99,7 @@ class corel_cpl(SBCodec):
 			id = False
 			title = False
 			item = Color(swatchbook)
-			if long:
+			if int:
 				id = str(struct.unpack('<L',file.read(4))[0])
 			model =  struct.unpack('<H',file.read(2))[0]
 			file.seek(2, 1)
@@ -156,7 +156,7 @@ class corel_cpl(SBCodec):
 			else:
 				file.seek(8, 1)
 				sys.stderr.write('unknown color model ['+str(model)+']\n')
-			if long:
+			if int:
 				model2 =  struct.unpack('<H',file.read(2))[0]
 				file.seek(2, 1)
 				if model2 == model:
@@ -218,9 +218,9 @@ class corel_cpl(SBCodec):
 			length = struct.unpack('B',file.read(1))[0]
 			if length > 0:
 				if version in ('\xdc\xdc','\xcc\xdc') or (version == '\xcd\xdc' and type not in (16,)):
-					title = unicode(struct.unpack(str(length)+'s',file.read(length))[0],'latin1')
+					title = str(struct.unpack(str(length)+'s',file.read(length))[0],'latin1')
 				else:
-					title = unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_le')
+					title = str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_le')
 			if version == '\xcd\xdd':
 				row[i], col[i] = struct.unpack('<2L',file.read(8))
 				file.seek(4, 1)
@@ -235,19 +235,19 @@ class corel_cpl(SBCodec):
 				if title and title > '':
 					id = title
 				else:
-					id = idfromvals(item.values[item.values.keys()[0]])
+					id = idfromvals(item.values[list(item.values.keys())[0]])
 			else:
 				if title and title > '':
 					item.info.title = title
 			if id in swatchbook.materials:
-				if item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+				if item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 					swatchbook.book.items.append(Swatch(id))
 					continue
 				else:
 					sys.stderr.write('duplicated id: '+id+'\n')
 					if item.info.title == '':
 						item.info.title = id
-					id = id+idfromvals(item.values[item.values.keys()[0]])
+					id = id+idfromvals(item.values[list(item.values.keys())[0]])
 			item.info.identifier = id
 			swatchbook.materials[id] = item
 			swatchbook.book.items.append(Swatch(id))

@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class gimp_gpl(SBCodec):
@@ -39,7 +39,7 @@ class gimp_gpl(SBCodec):
 	def read(swatchbook,file):
 		file = open(file, 'U').readlines()[1:]
 		if file[0][:5] == 'Name:':
-			swatchbook.info.title = unicode(file[1].partition('Name: ')[2].strip(),'utf-8')
+			swatchbook.info.title = str(file[1].partition('Name: ')[2].strip(),'utf-8')
 			file = file[1:]
 		if file[0][:8] == 'Columns:':
 			cols = int(file[0].partition('Columns: ')[2].strip()) # max 64 in Gimp 2.6
@@ -56,7 +56,7 @@ class gimp_gpl(SBCodec):
 					item = Color(swatchbook)
 					item.values[('RGB',False)] = [int(entry[0])/0xFF,int(entry[1])/0xFF,int(entry[2])/0xFF]
 					if len(entry) > 3 and entry[3].strip() not in ('Untitled','Sans titre'): # other languages to be added
-						id = unicode(entry[3].strip(),'utf-8')
+						id = str(entry[3].strip(),'utf-8')
 					if not id or id == '':
 						id = str(item.toRGB8())
 					if id in swatchbook.materials:
@@ -88,7 +88,7 @@ class gimp_gpl(SBCodec):
 
 	@staticmethod
 	def writem(swatchbook,items):
-		gpl_tmp = u''
+		gpl_tmp = ''
 		for item in items:
 			if isinstance(item,Swatch):
 				item = swatchbook.materials[item.material]

@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class adobe_acb(SBCodec):
@@ -40,25 +40,25 @@ class adobe_acb(SBCodec):
 		def decode_str(str):
 			if str[0:4] == '$$$/':
 				str = str.partition('=')[2]
-			return str.replace('^C',u'©').replace('^R',u'®')
+			return str.replace('^C','©').replace('^R','®')
 		file = open(file,'rb')
 		file.seek(8, 1)
 		length = struct.unpack('>L',file.read(4))[0]
 		if length > 0:
-			swatchbook.info.title = decode_str(unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))
+			swatchbook.info.title = decode_str(str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))
 		length = struct.unpack('>L',file.read(4))[0]
 		if length > 0:
-			prefix = decode_str(unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))
+			prefix = decode_str(str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))
 		else:
 			prefix = ''
 		length = struct.unpack('>L',file.read(4))[0]
 		if length > 0:
-			suffix = decode_str(unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))
+			suffix = decode_str(str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))
 		else:
 			suffix = ''
 		length = struct.unpack('>L',file.read(4))[0]
 		if length > 0:
-			swatchbook.info.rights = decode_str(unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))
+			swatchbook.info.rights = decode_str(str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))
 		nbcolors = struct.unpack('>H',file.read(2))[0]
 		swatchbook.book.display['columns'] = struct.unpack('>H',file.read(2))[0]
 		file.seek(2, 1)
@@ -67,7 +67,7 @@ class adobe_acb(SBCodec):
 			item = Color(swatchbook)
 			length = struct.unpack('>L',file.read(4))[0]
 			if length > 0:
-				item.info.title = prefix+decode_str(unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))+suffix
+				item.info.title = prefix+decode_str(str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be'))+suffix
 			id = struct.unpack('>6s',file.read(6))[0].strip()
 			if model == 0:
 				R,G,B = struct.unpack('>3B',file.read(3))
@@ -80,18 +80,18 @@ class adobe_acb(SBCodec):
 				item.values[('Lab',False)] = [L*100/0xFF,a-0x80,b-0x80]
 			else:
 				sys.stderr.write('unknown color model ['+str(model)+']\n')
-			if item.info.title == '' and sum(item.values[item.values.keys()[0]]) == 0:
+			if item.info.title == '' and sum(item.values[list(item.values.keys())[0]]) == 0:
 				swatchbook.book.items.append(Spacer())
 				continue
 			if id in swatchbook.materials:
-				if item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+				if item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 					swatchbook.book.items.append(Swatch(id))
 					continue
 				else:
 					sys.stderr.write('duplicated id: '+id+'\n')
-					id = id+idfromvals(item.values[item.values.keys()[0]])
+					id = id+idfromvals(item.values[list(item.values.keys())[0]])
 			elif len(id) == 0:
-				id = idfromvals(item.values[item.values.keys()[0]])
+				id = idfromvals(item.values[list(item.values.keys())[0]])
 			item.info.identifier = id
 			swatchbook.materials[id] = item
 			swatchbook.book.items.append(Swatch(id))

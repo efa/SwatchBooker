@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class ooo_sog(SBCodec):
@@ -43,7 +43,7 @@ class ooo_sog(SBCodec):
 		for elem in xml:
 			if elem.tag == draw+'gradient':
 				item = Gradient(swatchbook)
-				name = xmlunescape(unicode(elem.attrib[draw+'name']))
+				name = xmlunescape(str(elem.attrib[draw+'name']))
 				stop = ColorStop()
 				stop.position = eval(elem.attrib[draw+'border'][:-1])/100
 				color = Color(swatchbook)

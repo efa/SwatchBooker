@@ -53,9 +53,9 @@ class ral_bcs(SBCodec):
 				if c == ':': period += 1
 				name_tmp += c
 		name_tmp = name_tmp.split(':')
-		swatchbook.info.title = unicode(name_tmp[0].split('English_')[1],'latin1')
-		if unicode(name_tmp[1].split('German_')[1],'latin1') != swatchbook.info.title:
-			swatchbook.info.title_l10n['de'] = unicode(name_tmp[1].split('German_')[1],'latin1')
+		swatchbook.info.title = str(name_tmp[0].split('English_')[1],'latin1')
+		if str(name_tmp[1].split('German_')[1],'latin1') != swatchbook.info.title:
+			swatchbook.info.title_l10n['de'] = str(name_tmp[1].split('German_')[1],'latin1')
 		file.seek(1, 1)
 		for i in range(nbcolors):
 			item = Color(swatchbook)
@@ -64,9 +64,9 @@ class ral_bcs(SBCodec):
 			if length > 0:
 				id_tmp = file.read(length)
 				try:
-					id = unicode(id_tmp,'utf-8')
+					id = str(id_tmp,'utf-8')
 				except UnicodeDecodeError:
-					id =  unicode(id_tmp,'latin1')
+					id =  str(id_tmp,'latin1')
 			item.values[('Lab',False)] = list(struct.unpack('<3f',file.read(12)))
 			if sig == 'clf':
 				item.usage.add('spot')

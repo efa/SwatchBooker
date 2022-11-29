@@ -78,7 +78,7 @@ class sbz(SBCodec):
 				if elem.tag == '{'+dc+'}date':
 					try:
 						item.info.date = datetime.strptime(elem.text,"%Y-%m-%dT%H:%M:%S.%f")
-					except ValueError, e:
+					except ValueError as e:
 						if str(e) == "'f' is a bad directive in format '%Y-%m-%dT%H:%M:%S.%f'": # Python 2.5
 							item.info.date = datetime.strptime(elem.text.split('.')[0],"%Y-%m-%dT%H:%M:%S")
 						else:
@@ -113,9 +113,9 @@ class sbz(SBCodec):
 			sitem = Pattern(swatchbook)
 		for elem in material:
 			if elem.tag == 'values':
-				values = map(eval,elem.text.split())
+				values = list(map(eval,elem.text.split()))
 				if 'space' in elem.attrib:
-					sitem.values[(elem.attrib['model'],unicode(elem.attrib['space']))] = values
+					sitem.values[(elem.attrib['model'],str(elem.attrib['space']))] = values
 				else:
 					sitem.values[(elem.attrib['model'],False)] = values
 			elif elem.tag == 'metadata':
@@ -166,7 +166,7 @@ class sbz(SBCodec):
 				for extra in material.extra:
 					xml += '      <extra type="'+xmlescape(extra)+'">'
 					if material.extra[extra]:
-						xml += xmlescape(unicode(material.extra[extra]))
+						xml += xmlescape(str(material.extra[extra]))
 					xml += '</extra>\n'
 				xml += '    </color>\n'
 			elif isinstance(swatchbook.materials[id], Pattern):
@@ -175,7 +175,7 @@ class sbz(SBCodec):
 				for extra in material.extra:
 					xml += '      <extra type="'+xmlescape(extra)+'">'
 					if material.extra[extra]:
-						xml += xmlescape(unicode(material.extra[extra]))
+						xml += xmlescape(str(material.extra[extra]))
 					xml += '</extra>\n'
 				xml += '    </pattern>\n'
 		xml += '  </materials>\n'
@@ -185,7 +185,7 @@ class sbz(SBCodec):
 				if swatchbook.book.display[display]:
 					xml += ' '+display+'="'+str(swatchbook.book.display[display])+'"'
 			xml += '>\n'
-			xml += unicode(sbz.writem(swatchbook.book.items),'utf-8')
+			xml += str(sbz.writem(swatchbook.book.items),'utf-8')
 			xml += '  </book>\n'
 		xml += '</SwatchBook>\n'
 		
@@ -208,7 +208,7 @@ class sbz(SBCodec):
 
 	@staticmethod
 	def writemeta(meta,offset=0):
-		xml = u''
+		xml = ''
 		if offset == 0:
 			xml += '    <dc:format>application/swatchbook</dc:format>\n    <dc:type rdf:resource="http://purl.org/dc/dcmitype/Dataset" />\n'
 		if meta.date:
@@ -223,14 +223,14 @@ class sbz(SBCodec):
 					xml += '  '*(offset+2)+'<dc:'+dc+' xml:lang="'+lang+'">'+xmlescape(info_l10n[lang])+'</dc:'+dc+'>\n'
 		if meta.license > '':
 			xml += '  '*(offset+2)+'<dcterms:license rdf:resource="'+xmlescape(meta.license)+'" />\n'
-		if xml > u'':
+		if xml > '':
 			return '  '*(offset+1)+'<metadata>\n'+xml+'  '*(offset+1)+'</metadata>\n'
 		else:
-			return u''
+			return ''
 
 	@staticmethod
 	def writem(items,offset=0):
-		xml = u''
+		xml = ''
 		for item in items:
 			if isinstance(item,Group):
 				xml += '  '*(offset+2)+'<group>\n'

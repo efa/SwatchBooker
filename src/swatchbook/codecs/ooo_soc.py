@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class ooo_soc(SBCodec):
@@ -44,7 +44,7 @@ class ooo_soc(SBCodec):
 			if elem.tag == draw+'color':
 				item = Color(swatchbook)
 				if draw+'name' in elem.attrib:
-					id = xmlunescape(unicode(elem.attrib[draw+'name']))
+					id = xmlunescape(str(elem.attrib[draw+'name']))
 				if draw+'color' in elem.attrib:
 					rgb = elem.attrib[draw+'color']
 					item.values[('RGB',False)] = [int(rgb[1:3],16)/0xFF,int(rgb[3:5],16)/0xFF,int(rgb[5:],16)/0xFF]
@@ -71,7 +71,7 @@ class ooo_soc(SBCodec):
 
 	@staticmethod
 	def writem(swatchbook,items):
-		soc = u''
+		soc = ''
 		for item in items:
 			if isinstance(item,Swatch):
 				item = swatchbook.materials[item.material]

@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class adobe_aco(SBCodec):
@@ -77,17 +77,17 @@ class adobe_aco(SBCodec):
 			if version == 2:
 				length = struct.unpack('>L',file.read(4))[0]
 				if length > 0:
-					id = unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be').split('\x00', 1)[0]
+					id = str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be').split('\x00', 1)[0]
 			if version == 0: # Photoshop 6
 				length = struct.unpack('B',file.read(1))[0]
 				if length > 0:
 					id = file.read(length)
 			if not id and len(item.values) > 0:
-				id = idfromvals(item.values[item.values.keys()[0]])
+				id = idfromvals(item.values[list(item.values.keys())[0]])
 			elif not id:
 				id = 'col'+str(i)
 			if id in swatchbook.materials:
-				if (len(item.values) == 0 and len(swatchbook.materials[id].values) == 0) or (item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]):
+				if (len(item.values) == 0 and len(swatchbook.materials[id].values) == 0) or (item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]):
 					swatchbook.book.items.append(Swatch(id))
 					continue
 				else:

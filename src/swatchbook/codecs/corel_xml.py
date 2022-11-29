@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 import tempfile
 
@@ -87,11 +87,11 @@ class corel_xml(SBCodec):
 			for resource in localization.getchildren():
 				l10n[resource.attrib['id']] = resource.getchildren()
 		if 'name' in xml.attrib:
-			swatchbook.info.title = xmlunescape(unicode(xml.attrib['name']))
+			swatchbook.info.title = xmlunescape(str(xml.attrib['name']))
 		elif 'resid' in xml.attrib:
-			swatchbook.info.title = xmlunescape(unicode(l10n[xml.attrib['resid']][0].text))
+			swatchbook.info.title = xmlunescape(str(l10n[xml.attrib['resid']][0].text))
 			for lang in l10n[xml.attrib['resid']]:
-				swatchbook.info.title_l10n[corel_xml.langcodes[lang.tag]] = xmlunescape(unicode(lang.text))
+				swatchbook.info.title_l10n[corel_xml.langcodes[lang.tag]] = xmlunescape(str(lang.text))
 		colorspaces = xml.find('colorspaces')
 		if colorspaces:
 			for cs in colorspaces.getchildren():
@@ -165,20 +165,20 @@ class corel_xml(SBCodec):
 					if 'name' in color.attrib:
 						id = color.attrib['name']
 					elif 'resid' in color.attrib:
-						material.info.title = xmlunescape(unicode(l10n[color.attrib['resid']][0].text))
+						material.info.title = xmlunescape(str(l10n[color.attrib['resid']][0].text))
 						for lang in l10n[color.attrib['resid']]:
-							material.info.title_l10n[corel_xml.langcodes[lang.tag]] = xmlunescape(unicode(lang.text))
+							material.info.title_l10n[corel_xml.langcodes[lang.tag]] = xmlunescape(str(lang.text))
 						id = material.info.title
 					if not id or id == '':
-						id = str(material.values[material.values.keys()[0]])
+						id = str(material.values[list(material.values.keys())[0]])
 					if id in swatchbook.materials:
-						if material.values[material.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+						if material.values[list(material.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 							swatchbook.book.items.append(Swatch(id))
 							continue
 						else:
 							sys.stderr.write('duplicated id: '+id+'\n')
 							material.info.title = id
-							id = id+str(material.values[material.values.keys()[0]])
+							id = id+str(material.values[list(material.values.keys())[0]])
 					material.info.identifier = id
 					swatchbook.materials[id] = material
 					swatchbook.book.items.append(Swatch(id))

@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class adobe_acf(SBCodec):
@@ -40,20 +40,20 @@ class adobe_acf(SBCodec):
 		spot=False
 		file = open(file, 'U').readlines()
 		version = file[0].strip()
-		swatchbook.info.title = unicode(file[1].strip(),'macroman')
-		swatchbook.info.version = unicode(file[2].partition('LibraryVersion: ')[2].strip(),'macroman')
-		swatchbook.info.rights = unicode(file[3].partition('Copyright: ')[2].strip(),'macroman')
-		swatchbook.info.description = unicode(file[4].partition('AboutMessage: ')[2].strip(),'macroman')
+		swatchbook.info.title = str(file[1].strip(),'macroman')
+		swatchbook.info.version = str(file[2].partition('LibraryVersion: ')[2].strip(),'macroman')
+		swatchbook.info.rights = str(file[3].partition('Copyright: ')[2].strip(),'macroman')
+		swatchbook.info.description = str(file[4].partition('AboutMessage: ')[2].strip(),'macroman')
 		name_format = file[5].partition('Names: ')[2].strip().lower() # Full Partial
 		swatchbook.book.display['columns'] = eval(file[6].partition('Rows: ')[2].strip())
 		swatchbook.book.display['rows'] = eval(file[7].partition('Columns: ')[2].strip())
 		nbcolors = eval(file[8].partition('Entries: ')[2].strip())
 		prefix = file[9].partition('Prefix: ')[2].strip()
 		if prefix > '':
-			prefix = unicode(prefix+' ','macroman')
+			prefix = str(prefix+' ','macroman')
 		suffix = file[10].partition('Suffix: ')[2].strip()
 		if suffix > '':
-			suffix = unicode(' '+suffix,'macroman')
+			suffix = str(' '+suffix,'macroman')
 		type = file[11].partition('Type: ')[2].strip() # hifi Process Spot Mixed
 		if type == 'Spot':
 			spot = True
@@ -91,18 +91,18 @@ class adobe_acf(SBCodec):
 				if col_type == 'Spot' or spot:
 					item.usage.add('spot')
 				pos = pos+1
-			id = prefix+unicode(file[pos].strip(),'macroman')+suffix
+			id = prefix+str(file[pos].strip(),'macroman')+suffix
 			pos = pos+1
 			if id in swatchbook.materials:
-				if item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+				if item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 					swatchbook.book.items.append(Swatch(id))
 					continue
 				else:
 					sys.stderr.write('duplicated id: '+str(id)+'\n')
 					item.info.title = id
-					id = id+idfromvals(item.values[item.values.keys()[0]])
+					id = id+idfromvals(item.values[list(item.values.keys())[0]])
 			elif len(id) == 0:
-				id = idfromvals(item.values[item.values.keys()[0]])
+				id = idfromvals(item.values[list(item.values.keys())[0]])
 			item.info.identifier = id
 			swatchbook.materials[id] = item
 			swatchbook.book.items.append(Swatch(id))

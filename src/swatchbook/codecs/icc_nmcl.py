@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class icc_nmcl(SBCodec):
@@ -42,23 +42,23 @@ class icc_nmcl(SBCodec):
 		if 0 in prof.info['desc']:
 			swatchbook.info.title = prof.info['desc'][0]
 		else:
-			swatchbook.info.title = prof.info['desc'][prof.info['desc'].keys()[0]]
+			swatchbook.info.title = prof.info['desc'][list(prof.info['desc'].keys())[0]]
 			swatchbook.info.title_l10n = prof.info['desc']
 		if 0 in prof.info['cprt']:
 			swatchbook.info.rights = prof.info['cprt'][0]
 		else:
-			swatchbook.info.rights = prof.info['cprt'][prof.info['cprt'].keys()[0]]
+			swatchbook.info.rights = prof.info['cprt'][list(prof.info['cprt'].keys())[0]]
 			swatchbook.info.rights_l10n = prof.info['cprt']
 		file = open(file)
 		file.seek(prof.info['tags']['ncl2'][0]+8)
 		tag,n,m = struct.unpack('>4s 2L',file.read(12))
 		prefix,suffix = struct.unpack('>32s 32s',file.read(64))
-		prefix = unicode(prefix.split('\x00', 1)[0],'latin_1')
-		suffix = unicode(suffix.split('\x00', 1)[0],'latin_1')
+		prefix = str(prefix.split('\x00', 1)[0],'latin_1')
+		suffix = str(suffix.split('\x00', 1)[0],'latin_1')
 		for i in range(n):
 			item = Color(swatchbook)
 			# This is supposed to be coded in plain ascii but X-Rite Pantone NCPs use Latin 1
-			id = prefix+unicode(struct.unpack('>32s',file.read(32))[0].split('\x00', 1)[0],'latin_1')+suffix
+			id = prefix+str(struct.unpack('>32s',file.read(32))[0].split('\x00', 1)[0],'latin_1')+suffix
 			if prof.info['pcs'] == 'Lab ':
 				L,a,b = struct.unpack('>3H',file.read(6))
 				# I'm not really sure this is the right criterion

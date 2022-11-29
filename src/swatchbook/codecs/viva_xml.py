@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class viva_xml(SBCodec):
@@ -36,11 +36,11 @@ class viva_xml(SBCodec):
 	def read(swatchbook,file):
 		xml = etree.parse(file).getroot()
 		if 'name' in xml.attrib:
-			swatchbook.info.title = xmlunescape(unicode(xml.attrib['name']))
+			swatchbook.info.title = xmlunescape(str(xml.attrib['name']))
 		if len(list(xml.getiterator('copyright'))) > 0:
-			swatchbook.info.rights = xmlunescape(unicode(list(xml.getiterator('copyright'))[0].text))
+			swatchbook.info.rights = xmlunescape(str(list(xml.getiterator('copyright'))[0].text))
 		if 'mask' in xml.attrib:
-			prefix, suffix = xmlunescape(unicode(xml.attrib['mask'])).split('%1')
+			prefix, suffix = xmlunescape(str(xml.attrib['mask'])).split('%1')
 		else:
 			prefix = suffix = ''
 		if 'visiblerows' in xml.attrib:
@@ -48,7 +48,7 @@ class viva_xml(SBCodec):
 		colors = xml.getiterator('color')
 		for color in colors:
 			item = Color(swatchbook)
-			id_tmp = xmlunescape(unicode(color.attrib['name']))
+			id_tmp = xmlunescape(str(color.attrib['name']))
 			if color.attrib['type'] == 'rgb':
 				item.values[('RGB',False)] = [eval(color.find('red').text)/0xFF,\
 											  eval(color.find('green').text)/0xFF,\
@@ -59,17 +59,17 @@ class viva_xml(SBCodec):
 											   eval(color.find('yellow').text)/100,\
 											   eval(color.find('key').text)/100]
 			if not id_tmp or id_tmp == '':
-				id = idfromvals(item.values[item.values.keys()[0]])
+				id = idfromvals(item.values[list(item.values.keys())[0]])
 			else:
 				id = prefix+id_tmp+suffix
 			if id in swatchbook.materials:
-				if item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+				if item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 					swatchbook.book.items.append(Swatch(id))
 					continue
 				else:
 					sys.stderr.write('duplicated id: '+id+'\n')
 					item.info.title = id
-					id = id+idfromvals(item.values[item.values.keys()[0]])
+					id = id+idfromvals(item.values[list(item.values.keys())[0]])
 			item.info.identifier = id
 			swatchbook.materials[id] = item
 			swatchbook.book.items.append(Swatch(id))

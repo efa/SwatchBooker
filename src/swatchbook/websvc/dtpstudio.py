@@ -26,7 +26,7 @@ class dtpstudio(WebSvc):
 
 	content = ['swatchbook']
 
-	about = u'These data come from dtp studio\'s <a href="http://www.dtpstudio.de/colordesigner/popup_e.htm">Color Designer</a> tool.<br /><br />© dtp studio · Grünteweg 31· D-26127 Oldenburg'
+	about = 'These data come from dtp studio\'s <a href="http://www.dtpstudio.de/colordesigner/popup_e.htm">Color Designer</a> tool.<br /><br />© dtp studio · Grünteweg 31· D-26127 Oldenburg'
 
 	nbLevels = 1
 	url = "http://www.dtpstudio.de/colordesigner/"
@@ -70,9 +70,9 @@ class dtpstudio(WebSvc):
 			item = Color(swatchbook)
 			item.usage.add('spot')
 			try:
-				id = unicode(line[4],'utf-8')
+				id = str(line[4],'utf-8')
 			except UnicodeDecodeError:
-				id = unicode(line[4],'latin1')
+				id = str(line[4],'latin1')
 			if line[0] == 0:
 				item.values[('Lab',False)] = [line[1],line[2],line[3]]
 			elif line[0] == 1:
@@ -80,13 +80,13 @@ class dtpstudio(WebSvc):
 			elif line[0] == 2:
 				item.values[('sRGB',False)] = [line[1],line[2],line[3]]
 			if id in swatchbook.materials:
-				if item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+				if item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 					swatchbook.book.items.append(Swatch(id))
 					continue
 				else:
 					sys.stderr.write('duplicated id: '+id+'\n')
 					item.info.title = id
-					id = id+idfromvals(item.values[item.values.keys()[0]])
+					id = id+idfromvals(item.values[list(item.values.keys())[0]])
 			item.info.identifier = id
 			swatchbook.materials[id] = item
 			swatchbook.book.items.append(Swatch(id))

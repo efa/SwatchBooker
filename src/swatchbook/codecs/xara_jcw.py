@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class xara_jcw(SBCodec):
@@ -37,7 +37,7 @@ class xara_jcw(SBCodec):
 
 	@staticmethod
 	def read(swatchbook,file):
-		pantone = {'P4CPC': u'PANTONE® process coated', 'P4CPCE': u'PANTONE® process coated EURO', 'P4CPU': u'PANTONE® process uncoated', 'P4CPUE': u'PANTONE® process uncoated EURO', 'PCBC': u'PANTONE® color bridge CMYK PC', 'PCBCE': u'PANTONE® color bridge CMYK EC', 'PCBU': u'PANTONE® color bridge CMYK UP', 'PFGC': u'PANTONE® solid coated', 'PFGM': u'PANTONE® solid matte', 'PFGU': u'PANTONE® solid uncoated', 'PMC': u'PANTONE® metallic coated', 'PPC': u'PANTONE® pastel coated', 'PPU': u'PANTONE® pastel uncoated'}
+		pantone = {'P4CPC': 'PANTONE® process coated', 'P4CPCE': 'PANTONE® process coated EURO', 'P4CPU': 'PANTONE® process uncoated', 'P4CPUE': 'PANTONE® process uncoated EURO', 'PCBC': 'PANTONE® color bridge CMYK PC', 'PCBCE': 'PANTONE® color bridge CMYK EC', 'PCBU': 'PANTONE® color bridge CMYK UP', 'PFGC': 'PANTONE® solid coated', 'PFGM': 'PANTONE® solid matte', 'PFGU': 'PANTONE® solid uncoated', 'PMC': 'PANTONE® metallic coated', 'PPC': 'PANTONE® pastel coated', 'PPU': 'PANTONE® pastel uncoated'}
 		if os.path.splitext(os.path.basename(file))[0] in pantone:
 			swatchbook.info.title = pantone[os.path.splitext(os.path.basename(file))[0]]
 		file = open(file,'rb')
@@ -47,7 +47,7 @@ class xara_jcw(SBCodec):
 			A,B,C,D,ColorName = struct.unpack('<4H '+str(namesize)+'s',file.read(8+namesize))
 			if type % 2:
 				item.usage.add('spot')
-			id = unicode(ColorName.split('\x00')[0],'iso-8859-1')
+			id = str(ColorName.split('\x00')[0],'iso-8859-1')
 			if type % 16 < 8:
 				id = "PANTONE "+id
 			if type % 8 in (0,1):
@@ -57,13 +57,13 @@ class xara_jcw(SBCodec):
 			elif type % 8 in (4,5):
 				item.values[('HSV',False)] = [A/10000,B/10000,C/10000]
 			if id in swatchbook.materials:
-				if item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+				if item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 					swatchbook.book.items.append(Swatch(id))
 					continue
 				else:
 					sys.stderr.write('duplicated id: '+id+'\n')
 					item.info.title = id
-					id = id+idfromvals(item.values[item.values.keys()[0]])
+					id = id+idfromvals(item.values[list(item.values.keys())[0]])
 			item.info.identifier = id
 			swatchbook.materials[id] = item
 			swatchbook.book.items.append(Swatch(id))

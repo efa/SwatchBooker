@@ -76,7 +76,7 @@ class html(SBCodec):
 
 	@staticmethod
 	def writem(swatchbook,items):
-		html_tmp = u''
+		html_tmp = ''
 		for item in items:
 			if isinstance(item,Group):
 				html_tmp += '<div class="group">\n'

@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class adobe_ase(SBCodec):
@@ -48,7 +48,7 @@ class adobe_ase(SBCodec):
 			if block_size > 0:
 				length = struct.unpack('>H',file.read(2))[0]
 				if length > 0:
-					id = unicode(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be').split('\x00', 1)[0]
+					id = str(struct.unpack(str(length*2)+'s',file.read(length*2))[0],'utf_16_be').split('\x00', 1)[0]
 			if block_type == 0xc001:
 				item = Group()
 				if id:
@@ -75,15 +75,15 @@ class adobe_ase(SBCodec):
 				elif type == 1:
 					item.usage.add('spot')
 				if not id or id == '':
-					id = idfromvals(item.values[item.values.keys()[0]])
+					id = idfromvals(item.values[list(item.values.keys())[0]])
 				if id in swatchbook.materials:
-					if item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+					if item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 						parent.items.append(Swatch(id))
 						continue
 					else:
 						sys.stderr.write('duplicated id: '+id+'\n')
 						item.info.title = id
-						id = id+idfromvals(item.values[item.values.keys()[0]])
+						id = id+idfromvals(item.values[list(item.values.keys())[0]])
 				item.info.identifier = id
 				swatchbook.materials[id] = item
 				parent.items.append(Swatch(id))

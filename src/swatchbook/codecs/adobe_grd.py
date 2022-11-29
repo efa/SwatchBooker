@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class DescriptorParser:
@@ -34,10 +34,10 @@ class DescriptorParser:
 
 	def readUnicodeString(self):
 		length = struct.unpack('>L',self.file.read(4))[0]
-		string = unicode(self.file.read(length*2),'utf_16_be').split('\x00')[0]
+		string = str(self.file.read(length*2),'utf_16_be').split('\x00')[0]
 		if string[0:4] == '$$$/':
 			string = string.partition('=')[2]
-		return string.replace('^C',u'©').replace('^R',u'®')
+		return string.replace('^C','©').replace('^R','®')
 
 	def readDouble(self):
 		return struct.unpack('>d',self.file.read(8))[0]
@@ -156,7 +156,7 @@ class adobe_grd(SBCodec):
 					else:
 						file.seek(8, 1)
 						sys.stderr.write('unsupported color model ['+ColorModels[model]+']\n')
-					colorid = idfromvals(color.values[color.values.keys()[0]])
+					colorid = idfromvals(color.values[list(color.values.keys())[0]])
 					type = struct.unpack('>H',file.read(2))[0]
 					if type != 0:
 						colorid = ColorTypes[type]
@@ -253,7 +253,7 @@ class adobe_grd(SBCodec):
 							colorid = 'Background color'
 							color.values[('sRGB',False)] = [1,1,1]
 						if not colorid:
-							colorid = idfromvals(color.values[color.values.keys()[0]])
+							colorid = idfromvals(color.values[list(color.values.keys())[0]])
 						if not colorid in swatchbook.materials:
 							color.info.identifier = colorid
 							swatchbook.materials[colorid] = color

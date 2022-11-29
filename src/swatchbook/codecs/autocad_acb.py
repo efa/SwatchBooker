@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class autocad_acb(SBCodec):
@@ -35,7 +35,7 @@ class autocad_acb(SBCodec):
 	@staticmethod
 	def read(swatchbook,file):
 		xml = etree.parse(file).getroot()
-		swatchbook.info.title = unicode(list(xml.getiterator('bookName'))[0].text)
+		swatchbook.info.title = str(list(xml.getiterator('bookName'))[0].text)
 		if len(list(xml.getiterator('majorVersion'))) > 0:
 			swatchbook.info.version = list(xml.getiterator('majorVersion'))[0].text+'.'+list(xml.getiterator('minorVersion'))[0].text
 		nbcolors = len(list(xml.getiterator('colorEntry')))
@@ -51,9 +51,9 @@ class autocad_acb(SBCodec):
 				elif colorEntry.find('RGB8'):
 					item.values[('RGB',False)] = [eval(colorEntry.find('RGB8').find('red').text)/0xFF,eval(colorEntry.find('RGB8').find('green').text)/0xFF,eval(colorEntry.find('RGB8').find('blue').text)/0xFF]
 				item.usage.add('spot')
-				id = unicode(colorEntry.find('colorName').text)
+				id = str(colorEntry.find('colorName').text)
 				if id in swatchbook.materials:
-					if len(item.values) > 0 and item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+					if len(item.values) > 0 and item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 						swatchbook.book.items.append(Swatch(id))
 						i += 1
 						continue

@@ -19,15 +19,15 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 import os
 import sys
 import struct
 from datetime import *
-from color import *
+from .color import *
 from tempfile import mkdtemp
 from shutil import rmtree
-from cStringIO import StringIO
+from io import StringIO
 from PIL import Image, ImageDraw, ImageCms
 from math import pi, log, sin, sqrt
 
@@ -53,7 +53,7 @@ class SortedDict(dict):
 			data = list(data)
 		super(SortedDict, self).__init__(data)
 		if isinstance(data, dict):
-			self.keyOrder = data.keys()
+			self.keyOrder = list(data.keys())
 		else:
 			self.keyOrder = []
 			seen = set()
@@ -64,7 +64,7 @@ class SortedDict(dict):
 
 	def __deepcopy__(self, memo):
 		return self.__class__([(key, deepcopy(value, memo))
-							   for key, value in self.iteritems()])
+							   for key, value in self.items()])
 
 	def __setitem__(self, key, value):
 		if key not in self:
@@ -93,7 +93,7 @@ class SortedDict(dict):
 		return result
 
 	def items(self):
-		return zip(self.keyOrder, self.values())
+		return list(zip(self.keyOrder, list(self.values())))
 
 	def iteritems(self):
 		for key in self.keyOrder:
@@ -106,14 +106,14 @@ class SortedDict(dict):
 		return iter(self.keyOrder)
 
 	def values(self):
-		return map(self.__getitem__, self.keyOrder)
+		return list(map(self.__getitem__, self.keyOrder))
 
 	def itervalues(self):
 		for key in self.keyOrder:
 			yield self[key]
 
 	def update(self, dict_):
-		for k, v in dict_.iteritems():
+		for k, v in dict_.items():
 			self[k] = v
 
 	def setdefault(self, key, default):
@@ -147,7 +147,7 @@ class SortedDict(dict):
 		Replaces the normal dict.__repr__ with a version that returns the keys
 		in their sorted order.
 		"""
-		return '{%s}' % ', '.join(['%r: %r' % (k, v) for k, v in self.items()])
+		return '{%s}' % ', '.join(['%r: %r' % (k, v) for k, v in list(self.items())])
 
 	def clear(self):
 		super(SortedDict, self).clear()
@@ -266,7 +266,7 @@ class SwatchBook(object):
 				encoding = "UTF-8"
 			else:
 				encoding = sys.getfilesystemencoding()
-			if encoding == 'UTF-8' and isinstance(file, unicode):
+			if encoding == 'UTF-8' and isinstance(file, str):
 				filename = os.path.splitext(os.path.basename(file))[0]
 			else:
 				filename = os.path.splitext(os.path.basename(file))[0].decode(encoding)
@@ -280,7 +280,7 @@ class SwatchBook(object):
 		if format in codecs.writes:
 			codec = eval('codecs.' + format)
 			if output == None:
-				print codec.write(self)
+				print(codec.write(self))
 			else:
 				content = codec.write(self)
 				# TODO check if writable
@@ -288,7 +288,7 @@ class SwatchBook(object):
 				bookfile.write(content)
 				bookfile.close()
 		else:
-			raise FileFormatError, 'unsupported output format'
+			raise FileFormatError('unsupported output format')
 
 class Group(object):
 	def __init__(self, title="", parent=None):

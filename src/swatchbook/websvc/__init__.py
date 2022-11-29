@@ -19,9 +19,10 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
-from urllib import quote_plus,unquote_plus,urlencode,urlretrieve
-from urllib2 import urlopen,Request
+
+from urllib.parse import quote_plus, unquote_plus, urlencode
+from urllib.request import urlretrieve
+from urllib.request import urlopen, Request
 import xml.etree.cElementTree as etree
 from xml.sax.saxutils import escape as xmlescape
 from xml.sax.saxutils import unescape as xmlunescape
@@ -34,7 +35,7 @@ class WebSvc(object):
 
 for websvc in os.listdir((dirpath(__file__) or ".")):
 	if os.path.splitext(websvc)[1] == '.py' and websvc not in ('__init__.py','template.py'):
-		exec 'from '+os.path.splitext(websvc)[0]+' import *'
+		exec('from '+os.path.splitext(websvc)[0]+' import *')
 
 members = {}
 

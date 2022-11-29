@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class quark_qcl(SBCodec):
@@ -35,8 +35,8 @@ class quark_qcl(SBCodec):
 	@staticmethod
 	def read(swatchbook,file):
 		xml = etree.parse(file).getroot()
-		swatchbook.info.title = xmlunescape(unicode(list(xml.getiterator('file_descriptor'))[0].text))
-		swatchbook.info.rights = xmlunescape(unicode(list(xml.getiterator('originator'))[0].text))
+		swatchbook.info.title = xmlunescape(str(list(xml.getiterator('file_descriptor'))[0].text))
+		swatchbook.info.rights = xmlunescape(str(list(xml.getiterator('originator'))[0].text))
 		preferredmodel = list(xml.getiterator('default_color_space'))[0].text.strip()
 		usage = list(xml.getiterator('color_usage_recommendation'))[0].text
 		name_field_info = list(xml.getiterator('name_field_info'))
@@ -45,7 +45,7 @@ class quark_qcl(SBCodec):
 			suffix = {}
 			for name in name_field_info:
 				nid = eval(name.attrib['format_id'])-1
-				prefix[nid], suffix[nid] =  xmlunescape(unicode(name.attrib['long_form'])).split('%n')
+				prefix[nid], suffix[nid] =  xmlunescape(str(name.attrib['long_form'])).split('%n')
 		ui_spec =  os.path.dirname(file)+'/'+list(xml.getiterator('ui_spec'))[0].text
 		breaks = []
 		if os.path.isfile(ui_spec):
@@ -67,24 +67,24 @@ class quark_qcl(SBCodec):
 			if i in breaks:
 				swatchbook.book.items.append(Break())
 			item = Color(swatchbook)
-			id = xmlunescape(unicode(color.getchildren()[eval(data_format['SAMPLE_ID'])-1].text))
-			if data_format.has_key('NAME_FORMAT_ID'):
+			id = xmlunescape(str(color.getchildren()[eval(data_format['SAMPLE_ID'])-1].text))
+			if 'NAME_FORMAT_ID' in data_format:
 				nid = eval(color.getchildren()[eval(data_format['NAME_FORMAT_ID'])-1].text)-1
 				id = prefix[nid]+id+suffix[nid]
-			if data_format.has_key('LAB_L'):
+			if 'LAB_L' in data_format:
 				item.values[('Lab',False)] = [eval(color.getchildren()[eval(data_format['LAB_L'])-1].text),\
 											  eval(color.getchildren()[eval(data_format['LAB_A'])-1].text),\
 											  eval(color.getchildren()[eval(data_format['LAB_B'])-1].text)]
-			if data_format.has_key('RGB_R'):
+			if 'RGB_R' in data_format:
 				item.values[('RGB',False)] = [eval(color.getchildren()[eval(data_format['RGB_R'])-1].text)/0xFF,\
 											  eval(color.getchildren()[eval(data_format['RGB_G'])-1].text)/0xFF,\
 											  eval(color.getchildren()[eval(data_format['RGB_B'])-1].text)/0xFF]
-			if data_format.has_key('CMYK_C'):
+			if 'CMYK_C' in data_format:
 				item.values[('CMYK',False)] = [eval(color.getchildren()[eval(data_format['CMYK_C'])-1].text)/100,\
 											   eval(color.getchildren()[eval(data_format['CMYK_M'])-1].text)/100,\
 											   eval(color.getchildren()[eval(data_format['CMYK_Y'])-1].text)/100,\
 											   eval(color.getchildren()[eval(data_format['CMYK_K'])-1].text)/100]
-			if data_format.has_key('PC6_1'):
+			if 'PC6_1' in data_format:
 				item.values[('6CLR',False)] = [eval(color.getchildren()[eval(data_format['PC6_1'])-1].text)/100,\
 											  eval(color.getchildren()[eval(data_format['PC6_2'])-1].text)/100,\
 											  eval(color.getchildren()[eval(data_format['PC6_3'])-1].text)/100,\
@@ -95,15 +95,15 @@ class quark_qcl(SBCodec):
 			if usage in ('4','5'):
 				item.usage.add('spot')
 			if not id or id == '':
-				id = idfromvals(item.values[item.values.keys()[0]])
+				id = idfromvals(item.values[list(item.values.keys())[0]])
 			if id in swatchbook.materials:
-				if item.values[item.values.keys()[0]] == swatchbook.materials[id].values[swatchbook.materials[id].values.keys()[0]]:
+				if item.values[list(item.values.keys())[0]] == swatchbook.materials[id].values[list(swatchbook.materials[id].values.keys())[0]]:
 					swatchbook.book.items.append(Swatch(id))
 					continue
 				else:
 					sys.stderr.write('duplicated id: '+id+'\n')
 					item.info.title = id
-					id = id+idfromvals(item.values[item.values.keys()[0]])
+					id = id+idfromvals(item.values[list(item.values.keys())[0]])
 			item.info.identifier = id
 			swatchbook.materials[id] = item
 			swatchbook.book.items.append(Swatch(id))

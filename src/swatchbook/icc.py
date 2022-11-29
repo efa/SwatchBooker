@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 import os
 import struct
 import string
@@ -32,16 +32,16 @@ class ICCprofile():
 	'''Gets basic informations about a profile'''
 	def __init__(self,uri):
 		if os.path.getsize(uri) < 128:
-			raise BadICCprofile, "That file doesn't seem to be an ICC color profile"
+			raise BadICCprofile("That file doesn't seem to be an ICC color profile")
 		else:
 			file = open(uri,'rb')
 			self.uri = uri
 			file.seek(0)
 			size,cmm = struct.unpack('>L 4s',file.read(8))                    # Profile size
 			if os.path.getsize(uri) != size:
-				raise BadICCprofile, "That file doesn't have the expected size"
+				raise BadICCprofile("That file doesn't have the expected size")
 			if not (all(c in string.ascii_letters+' '+string.digits for c in cmm) or cmm == '\x00\x00\x00\x00'):
-				raise BadICCprofile, "That file doesn't seem to be an ICC color profile"
+				raise BadICCprofile("That file doesn't seem to be an ICC color profile")
 			else:
 				file.seek(8)
 				version = struct.unpack('>B 1s 2s',file.read(4))              # Profile version number
@@ -65,7 +65,7 @@ class ICCprofile():
 					desc = self.info['tags']['desc']
 					self.info['desc'] = self.readfield(file,desc[1],desc[0])
 				except KeyError:
-					raise BadICCprofile, "That file misses one mandatory tag"
+					raise BadICCprofile("That file misses one mandatory tag")
 			file.close()
 
 	def readfield(self,file,size,start):
@@ -74,10 +74,10 @@ class ICCprofile():
 		# text and desc fields are supposed to be coded in plain ascii but I've come across some mac_roman encoded
 		if type == 'text':
 			content = struct.unpack(str(size-8)+'s',file.read(size-8))[0]
-			return {0: unicode(content,'mac_roman').split('\x00', 1)[0]}
+			return {0: str(content,'mac_roman').split('\x00', 1)[0]}
 		elif type == 'desc':
 			acount = struct.unpack('>L',file.read(4))[0]
-			return {0: unicode(struct.unpack(str(acount)+'s',file.read(acount))[0],'mac_roman').split('\x00', 1)[0]}
+			return {0: str(struct.unpack(str(acount)+'s',file.read(acount))[0],'mac_roman').split('\x00', 1)[0]}
 		elif type == 'mluc':
 			content = {}
 			records = []
@@ -92,6 +92,6 @@ class ICCprofile():
 					lg = lang+'_'+country
 				else:
 					lg = lang
-				content[lg] = unicode(struct.unpack(str(length)+'s',file.read(length))[0],'utf_16_be').strip('\x00')
+				content[lg] = str(struct.unpack(str(length)+'s',file.read(length))[0],'utf_16_be').strip('\x00')
 			return content
 		

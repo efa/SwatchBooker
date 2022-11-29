@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.websvc import *
 
 class munsell(WebSvc):
@@ -27,7 +27,7 @@ class munsell(WebSvc):
 
 	content = ['swatchbook']
 
-	about = u'These data come from Munsell Color Science Laboratory\'s <a href="https://www.rit.edu/cos/colorscience/rc_munsell_renotation.php">Munsell Renotation Data</a>. None of these data should be confused with actual measurements from a Munsell Book of Color!<br /><br />Copyright 2010 RIT Munsell Color Science Laboratory. All rights reserved.'
+	about = 'These data come from Munsell Color Science Laboratory\'s <a href="https://www.rit.edu/cos/colorscience/rc_munsell_renotation.php">Munsell Renotation Data</a>. None of these data should be confused with actual measurements from a Munsell Book of Color!<br /><br />Copyright 2010 RIT Munsell Color Science Laboratory. All rights reserved.'
 
 	nbLevels = 1
 	url = 'http://www.rit-mcsl.org/MunsellRenotation/'

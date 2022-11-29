@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class gimp_ggr(SBCodec):
@@ -38,7 +38,7 @@ class gimp_ggr(SBCodec):
 		item = Gradient(swatchbook)
 		file = open(file, 'U').readlines()[1:]
 		if file[0][:5] == 'Name:':
-			item.info.identifier = unicode(file[0].partition('Name: ')[2].strip(),'utf-8')
+			item.info.identifier = str(file[0].partition('Name: ')[2].strip(),'utf-8')
 			file = file[1:]
 		if file[0].strip().isdigit():
 			nbstops = eval(file[0].strip())
@@ -49,7 +49,7 @@ class gimp_ggr(SBCodec):
 		segments = []
 		for i in range(nbstops):
 			segment = file[i].split()
-			segment = map(eval,segment)
+			segment = list(map(eval,segment))
 			if len(segment) == 13:
 				segment.append(0)
 				segment.append(0)

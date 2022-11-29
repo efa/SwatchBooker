@@ -19,7 +19,7 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
+
 from swatchbook.codecs import *
 
 class colorschemer(SBCodec):
@@ -48,7 +48,7 @@ class colorschemer(SBCodec):
 			file.seek(1, 1)
 			length = struct.unpack('<L',file.read(4))[0]
 			if length > 0:
-				id =  unicode(struct.unpack(str(length)+'s',file.read(length))[0],'latin1')
+				id =  str(struct.unpack(str(length)+'s',file.read(length))[0],'latin1')
 			file.seek(11, 1)
 			if not id or id == '':
 				id = str((R,G,B))

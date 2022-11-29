@@ -19,9 +19,9 @@
 #       MA 02110-1301, USA.
 #
 
-from __future__ import division
-from lcms2 import *
-from icc import *
+
+from .lcms2 import *
+from .icc import *
 import os.path
 import math
 

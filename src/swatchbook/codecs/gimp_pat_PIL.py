@@ -32,7 +32,7 @@ class gimp_pat(ImageFile.ImageFile):
 		header = self.fp.read(24)
 		header_size,version,width,height,bytes,GPAT = struct.unpack('>5I 4s',header)
 		if GPAT != "GPAT":
-			raise SyntaxError, "not a Gimp pattern file"
+			raise SyntaxError("not a Gimp pattern file")
 
 		# size in pixels (width, height)
 		self.size = width,height
@@ -47,7 +47,7 @@ class gimp_pat(ImageFile.ImageFile):
 			self.tile = [("raw", (0, 0) + self.size, header_size,
 						(self.mode, 0, 1))]
 		else:
-			raise SyntaxError, "unknown number of bits"
+			raise SyntaxError("unknown number of bits")
 
 Image.register_open("GPAT", gimp_pat)
 		
