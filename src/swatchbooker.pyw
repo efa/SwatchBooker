@@ -23,6 +23,7 @@ from __future__ import division
 import re
 import tempfile
 from shutil import copy2
+from functools import cmp_to_key
 from PIL import ImageQt
 
 from sbcommon import *
@@ -1635,7 +1636,7 @@ class sbGridWidget(QListWidget):
 			breaks2 = {}
 			for item in breaks:
 				breaks2[self.row(item)] = item
-			for key in sorted(breaks2.iterkeys()):
+			for key in sorted(breaks2):
 				if isinstance(self.item(key), gridItemGroup) and (isinstance(self.item(key - 1), gridItemBreak) or isinstance(self.item(key - 1), gridItemGroup) or key == 0):
 					height = 0
 				elif isinstance(self.item(key - 1), gridItemBreak) or key == 0:
@@ -1664,7 +1665,7 @@ class sbGridWidget(QListWidget):
 			breaks2 = {}
 			for item in breaks:
 				breaks2[self.row(item)] = item
-			for key in sorted(breaks2.iterkeys()):
+			for key in sorted(breaks2):
 				if isinstance(self.item(key), gridItemGroup) and (isinstance(self.item(key - 1), gridItemBreak) or isinstance(self.item(key - 1), gridItemGroup) or key == 0):
 					width = 0
 				elif isinstance(self.item(key - 1), gridItemBreak) or key == 0:
@@ -2790,7 +2791,7 @@ class SettingsDlg(QDialog):
 		self.cmykCombo.addItem('Fogra27L')
 		self.mntrCombo.insertSeparator(self.mntrCombo.count())
 		self.cmykCombo.insertSeparator(self.cmykCombo.count())
-		for profile in sorted(self.profiles, cmp=lambda x, y: cmp(x[0].lower(), y[0].lower())):
+		for profile in sorted(self.profiles, key=cmp_to_key(lambda x, y: cmp(x[0].lower(), y[0].lower()))):
 			if profile[2] == "mntr" and profile[3] == 'RGB ':
 				self.mntrCombo.addItem(profile[0], profile[1])
 			if profile[3] == 'CMYK':

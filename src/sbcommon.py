@@ -43,16 +43,16 @@ def translate_sb(app,settings,main_globals):
 			lang = gettext.translation('swatchbooker', None, languages=[str(locale)])
 		lang.install()
 		def _(msgid):
-			return lang.gettext(msgid).decode('utf-8')
+			return lang.gettext(msgid)
 
 		def n_(msgid0,msgid1,n):
-			return lang.ngettext(msgid0,msgid1,n).decode('utf-8')
+			return lang.ngettext(msgid0,msgid1,n)
 	except IOError:
 		def _(msgid):
-			return gettext.gettext(msgid).decode('utf-8')
+			return gettext.gettext(msgid)
 
 		def n_(msgid0,msgid1,n):
-			return gettext.ngettext(msgid0,msgid1,n).decode('utf-8')
+			return gettext.ngettext(msgid0,msgid1,n)
 
 	main_globals['_'] = _
 	main_globals['n_'] = n_
@@ -202,7 +202,7 @@ class webWidgetList(QTreeWidget):
 					titem.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
 					titem.setFlags(titem.flags() & ~(Qt.ItemIsSelectable))
 
-qt_resource_data = "\
+qt_resource_data = b"\
 \x00\x00\x2d\x5c\
 \x3c\
 \x3f\x78\x6d\x6c\x20\x76\x65\x72\x73\x69\x6f\x6e\x3d\x22\x31\x2e\
@@ -933,14 +933,14 @@ qt_resource_data = "\
 \x2f\x67\x3e\x0a\x3c\x2f\x73\x76\x67\x3e\x0a\
 "
 
-qt_resource_name = "\
+qt_resource_name = b"\
 \x00\x10\
 \x04\xe6\xf8\x27\
 \x00\x73\
 \x00\x77\x00\x61\x00\x74\x00\x63\x00\x68\x00\x62\x00\x6f\x00\x6f\x00\x6b\x00\x65\x00\x72\x00\x2e\x00\x73\x00\x76\x00\x67\
 "
 
-qt_resource_struct = "\
+qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x01\
 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 "

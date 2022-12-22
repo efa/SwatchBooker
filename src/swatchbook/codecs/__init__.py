@@ -53,7 +53,7 @@ class SBCodec(object):
 
 for codec in os.listdir((dirpath(__file__) or ".")):
 	if os.path.splitext(codec)[1] == '.py' and codec not in ('__init__.py','template.py'):
-		exec('from '+os.path.splitext(codec)[0]+' import *')
+		exec('from .'+os.path.splitext(codec)[0]+' import *')
 
 writes = []
 reads = []

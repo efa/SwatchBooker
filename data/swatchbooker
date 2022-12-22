@@ -2,6 +2,11 @@
 
 PROGRAM=/opt/SwatchBooker/lib/swatchbooker/swatchbooker.pyw
 PYTHON=`which python`
-export PYTHONPATH=/opt/SwatchBooker/lib/python3.9/site-packages:/opt/SwatchBooker/lib/python3.9/site-packages/swatchbook:$PYTHONPATH
+export PYTHONPATH=\
+/opt/SwatchBooker/lib/python3.9/site-packages:\
+/opt/SwatchBooker/lib/python3.9/site-packages/swatchbook:\
+/opt/SwatchBooker/lib/python3.9/site-packages/swatchbook/codecs:\
+/opt/SwatchBooker/lib/python3.9/site-packages/swatchbook/websvc:\
+/usr/lib/python3/dist-packages:\
 
 $PYTHON $PROGRAM ;
